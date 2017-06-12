@@ -2,4 +2,4 @@
 applications:
 - name: nifty-gui
   memory: 512M
-  host: https://api.run.pivotal.io
+  host: api.run.pivotal.io
