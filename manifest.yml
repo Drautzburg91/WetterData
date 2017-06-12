@@ -3,3 +3,4 @@ applications:
 - name: nifty-gui
   memory: 512M
   host: api.run.pivotal.io
+  buildpack: https://github.com/cloudfoundry/java-buildpack.git
