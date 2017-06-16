@@ -2,7 +2,7 @@
 applications:
 - name: CAD_WetterAPI
   memory: 1024M
-  path: /usr/share/tomcat8/.jenkins/workspace/CAD_WetterAPI/mqtt/target
+  path: /usr/share/tomcat8/.jenkins/workspace/CAD_WetterAPI/mqtt/target/mqtt-1.0.0.war
   buildpack: https://github.com/cloudfoundry/java-buildpack.git#v3.15
   host: CAD_WetterAPI
   timeout: 60
