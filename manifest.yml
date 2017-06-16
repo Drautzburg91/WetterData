@@ -5,9 +5,9 @@ applications:
   path: /usr/share/tomcat8/.jenkins/workspace/CAD_WetterAPI/mqtt/target
   buildpack: https://github.com/cloudfoundry/java-buildpack.git
   host: CAD_WetterAPI
- 
+  timeout: 60
   env:
-    APICallIntervall: 60000
+    APICallIntervall: "60000"
     CadRabbit_Host: ec2-34-210-210-13.us-west-2.compute.amazonaws.com
     CadRabbit_Password: cadWeatherApi
     CadRabbit_UserName: weatherTenantOne:cadWeatherApi
