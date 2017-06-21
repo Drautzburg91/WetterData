@@ -6,8 +6,14 @@ applications:
   buildpack: https://github.com/cloudfoundry/java-buildpack.git#v3.15
   host: CAD_WetterAPI
   timeout: 60
+  health-check-type: port
+  stack: cflinuxfs2
   env:
     APICallIntervall: "60000"
     CadRabbit_Host: ec2-34-210-210-13.us-west-2.compute.amazonaws.com
     CadRabbit_Password: cadWeatherApi
     CadRabbit_UserName: weatherTenantOne:cadWeatherApi
+    CAD_DB_USER: CAD_MASTER_JDBC
+    CAD_DB_PASSWORD: HTWGhtwg
+    CAD_DB_HOST: cad-weather-api-database.cc1ormgk3ins.us-east-2.rds.amazonaws.com
+    WETTER_API_ID: 41c464d95d33fabc24d44a5086ea9848
