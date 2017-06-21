@@ -1,5 +1,7 @@
-package Mqtt;
+package Mqtt.Service;
 
+import Mqtt.Model.WeatherData;
+import Mqtt.Model.WeatherDataWeekly;
 import com.google.gson.*;
 import org.eclipse.paho.client.mqttv3.*;
 import org.springframework.scheduling.annotation.Async;
@@ -17,9 +19,9 @@ import java.util.Map;
  */
 
 @Service
-public class MqttService implements MessagingService {
+public class WeatherApiService implements MessagingService {
 
-	private String apiId = "41c464d95d33fabc24d44a5086ea9848";
+	private String apiId;
 	private String jsonInString;
 	private Gson gson;
 	private boolean transmittingLive;
@@ -33,19 +35,23 @@ public class MqttService implements MessagingService {
 	private WeatherData fakeWeatherData;
 	private HashMap<String, String> cities;
 
-	public MqttService() {
-		System.out.println("MqttService started");
+	public WeatherApiService() {
+		apiId = System.getenv("WETTER_API_ID");
+		System.out.println("MqttService started: "+System.getenv("CadRabbit_Host"));
 		// credentials have to be stored in env variables
 		options = new MqttConnectOptions();
-		options.setUserName(System.getenv("CadRabbit_UserName"));
-		options.setPassword(System.getenv("CadRabbit_Password").toCharArray());
-
+        System.out.println("Connect-Options:" +System.getenv("CadRabbit_UserName"));
+        String username = System.getenv("CadRabbit_UserName");
+        String password = System.getenv("CadRabbit_Password");
+        String host = "tcp://" + System.getenv("CadRabbit_Host");
+		options.setUserName(username);
+		options.setPassword(password.toCharArray());
+        System.out.println("Host: " + System.getenv("CadRabbit_Host"));
 		gson = new GsonBuilder().setPrettyPrinting().create();
 		initPlz();
+        System.out.println("Host: " + System.getenv("CadRabbit_Host"));
 		try {
-
-			System.out.println("Host: " + System.getenv("CadRabbit_Host"));
-			client = new MqttClient("tcp://" + System.getenv("CadRabbit_Host"), MqttClient.generateClientId());
+			client = new MqttClient(host, MqttClient.generateClientId());
 			client.connect(options);
 			callback = new MqttCallback() {
 				@Override
@@ -72,7 +78,8 @@ public class MqttService implements MessagingService {
 			};
 
 		} catch (MqttException e) {
-			e.printStackTrace();
+            System.out.println("MqttException:" +e);
+            e.printStackTrace();
 		}
 	}
 
@@ -116,10 +123,7 @@ public class MqttService implements MessagingService {
 				jsonInString = gson.toJson(this.fakeWeatherData);
 				message = new MqttMessage(jsonInString.getBytes());
 				System.out.println(jsonInString);
-				client.publish("weekly", message);
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+                client.publish(weatherData.getPlz() + "/today", message);
 			} catch (MqttPersistenceException e) {
 				e.printStackTrace();
 			} catch (MqttException e) {
@@ -285,6 +289,8 @@ public class MqttService implements MessagingService {
 
 			client.publish(plz + "/weekly", message);
 			System.out.println("Mqtt-Service: handlePLZWeekly published, PLZ:" + plz);
+
+
 
 		} catch (IOException | NullPointerException e) {
 			e.printStackTrace();
